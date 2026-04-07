@@ -1,65 +1,103 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { CHURCH_INFO } from "@/lib/constants";
-import FadeIn from "./FadeIn";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+const SLIDES = [
+  {
+    subtitle: CHURCH_INFO.sloganEn,
+    title: "예수님의 온전한 제자되어",
+    highlight: "상처가 별이되는 은혜의 공동체",
+    cta: { label: "LIVE 예배 시청", href: CHURCH_INFO.youtubeLive },
+    bg: "from-navy via-navy-light to-navy",
+  },
+  {
+    subtitle: "Sunday Worship",
+    title: "주일 예배 안내",
+    highlight: "본교 8:30 · 11:00 | 송도 8:30 · 11:00 · 1:00",
+    cta: { label: "예배 시간 보기", href: "#worship" },
+    bg: "from-[#1a1a3e] via-[#2d2b55] to-[#1a1a3e]",
+  },
+  {
+    subtitle: "New Family",
+    title: "새가족을 환영합니다",
+    highlight: "4주 새가족 과정으로 함께 시작하세요",
+    cta: { label: "자세히 보기", href: "#newfamily" },
+    bg: "from-[#1e3a2f] via-[#264a3a] to-[#1e3a2f]",
+  },
+];
 
 export default function Hero() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrent((p) => (p + 1) % SLIDES.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const slide = SLIDES[current];
+
   return (
-    <section className="hero-gradient grain relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Ambient lights */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[120px]" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/6 rounded-full blur-[100px]" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/4 rounded-full blur-[150px] rotate-12" />
+    <section className="relative bg-navy overflow-hidden">
+      {/* Background */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${slide.bg} transition-all duration-700`} />
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+        backgroundSize: "32px 32px"
+      }} />
 
-      <div className="relative z-10 text-center px-5 max-w-3xl mx-auto">
-        <FadeIn>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass mb-10">
-            <span className="w-1.5 h-1.5 bg-green-400 rounded-full pulse-live" />
-            <span className="text-white/60 text-xs font-medium tracking-wider uppercase">Live Worship</span>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={100}>
-          <p className="text-accent-light/80 text-xs sm:text-sm tracking-[0.25em] uppercase mb-6 font-medium">
-            {CHURCH_INFO.sloganEn}
-          </p>
-        </FadeIn>
-
-        <FadeIn delay={200}>
-          <h1 className="text-[2rem] sm:text-[3rem] lg:text-[3.75rem] font-bold text-white leading-[1.15] mb-3 tracking-tight">
-            예수님의 온전한 제자되어
-          </h1>
-        </FadeIn>
-
-        <FadeIn delay={300}>
-          <h2 className="text-[1.5rem] sm:text-[2.25rem] lg:text-[2.75rem] font-bold leading-[1.2] mb-10 tracking-tight">
-            <span className="bg-gradient-to-r from-accent-light via-accent to-accent-light bg-clip-text text-transparent">
-              상처가 별이되는 은혜의 공동체
-            </span>
-          </h2>
-        </FadeIn>
-
-        <FadeIn delay={400}>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-6">
+        <div className="py-16 sm:py-20 lg:py-24 min-h-[320px] sm:min-h-[380px] flex flex-col justify-center">
+          <div className="max-w-2xl">
+            <p className="text-white/40 text-[11px] sm:text-xs tracking-[0.2em] uppercase mb-4 font-medium transition-all duration-500">
+              {slide.subtitle}
+            </p>
+            <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] font-bold text-white leading-tight mb-3 tracking-tight transition-all duration-500">
+              {slide.title}
+            </h1>
+            <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-white/60 mb-8 tracking-tight transition-all duration-500">
+              {slide.highlight}
+            </p>
             <a
-              href={CHURCH_INFO.youtubeLive}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2.5 bg-white text-navy font-semibold text-sm px-7 py-3.5 rounded-full hover:bg-white/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-white/10"
+              href={slide.cta.href}
+              target={slide.cta.href.startsWith("http") ? "_blank" : undefined}
+              rel={slide.cta.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="inline-flex items-center gap-2 bg-white text-navy text-[13px] font-semibold px-6 py-3 rounded-lg hover:bg-white/90 transition-all"
             >
-              <span className="w-2 h-2 bg-red-500 rounded-full pulse-live" />
-              LIVE 예배 시청
-            </a>
-            <a
-              href="#worship"
-              className="inline-flex items-center justify-center gap-2 text-white/70 font-medium text-sm px-7 py-3.5 rounded-full border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all"
-            >
-              예배 안내 →
+              {slide.cta.href === CHURCH_INFO.youtubeLive && (
+                <span className="w-2 h-2 bg-red-500 rounded-full pulse-live" />
+              )}
+              {slide.cta.label}
             </a>
           </div>
-        </FadeIn>
+        </div>
+
+        {/* Controls */}
+        <div className="absolute bottom-6 right-6 flex items-center gap-3">
+          <div className="flex gap-1.5">
+            {SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  i === current ? "w-6 bg-white/70" : "w-1.5 bg-white/20"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="flex gap-1">
+            <button onClick={() => setCurrent((p) => (p - 1 + SLIDES.length) % SLIDES.length)}
+              className="w-7 h-7 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <ChevronLeft className="w-3.5 h-3.5 text-white/60" />
+            </button>
+            <button onClick={() => setCurrent((p) => (p + 1) % SLIDES.length)}
+              className="w-7 h-7 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <ChevronRight className="w-3.5 h-3.5 text-white/60" />
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 }
